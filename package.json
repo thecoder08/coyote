@@ -1,0 +1,13 @@
+{
+  "name": "@thecoder08/coyote",
+  "version": "1.0.1",
+  "description": "A versatile high-level programming language.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "coyote": "main.js"
+  },
+  "author": "thecoder08",
+  "license": "MIT"
+}
