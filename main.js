@@ -122,7 +122,6 @@ else {
         }
       }
       var output = nosection + 'section .text\n' + text + 'section .data\n' + data;
-      console.log(output);
       fs.writeFile(args[2].split('.')[0] + '.asm', output, function(err) {
         if (err) {
           console.log('Error writing temporary output file!');
@@ -132,7 +131,7 @@ else {
           if (args[3] == '64') {
             append = '64';
           }
-          var assembler = cp.exec('nasm -f elf' + append + ' ' + args[2].split('.')[0] + '.asm');
+          var assembler = cp.exec('nasm -g -f elf' + append + ' ' + args[2].split('.')[0] + '.asm');
           assembler.stdout.on('data', function(data) {
             process.stdout.write(data);
           });
