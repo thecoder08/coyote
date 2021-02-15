@@ -98,3 +98,5 @@ Hello World!
 ```
 ## Where to go from here
 There's a reason that I called Coyote a versatile language. I originally designed it to write my [operating system from scratch](https://github.com/thecoder08/scratch-os). You can make operating systems, use any external framework/library, and even combine it with other programming languages. Right now it doesn't have many features. It's lacking in control flow features for example (if/else, loops etc). However, because you can combine it with other languages, you could create them. I hope that you find the Coyote project useful and interesting.
+
+OSX support is coming soon!
