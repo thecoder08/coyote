@@ -27,6 +27,7 @@ else {
           }
           else {
             console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+            process.exit();
           }
         }
         else if (tokens[0] == 'NEW') {
@@ -38,6 +39,7 @@ else {
           }
           else {
             console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+            process.exit();
           }
           if (tokens[1] == 'FUN') {
             if (args[3] == 'darwin') {
@@ -48,6 +50,7 @@ else {
             }
             else {
               console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+              process.exit();
             }
           }
           else if (tokens[1] == 'INT') {
@@ -71,6 +74,7 @@ else {
             }
             else {
               console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+              process.exit();
             }
             for (var j = 0; j < string; j++) {
               data += tokens[j + 3];
@@ -98,6 +102,7 @@ else {
             }
             else {
               console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+              process.exit();
             }
           }
           text += 'ret\n';
@@ -131,14 +136,12 @@ else {
                 text += 'push ' + tokens[j] + '\n';
               }
             }
-            text += 'pop rbx\n';
           }
           else if (args[4] == '32') {
             text += 'push ebx\n';
             for (var j = tokens.length; j < 1; j--) {
               text += 'push ' + tokens[j] + '\n';
             }
-            text += 'pop ebx\n';
           }
           else if (args[4] == '16') {
             text += 'push bx\n';
@@ -165,10 +168,10 @@ else {
                 text += 'push ' + tokens[j] + '\n';
               }
             }
-            text += 'pop bx\n';
           }
           else {
-            console.log('');
+            console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+            process.exit();
           }
           if (args[3] == 'darwin') {
             text += 'call _' + tokens[0] + '\n';
@@ -178,6 +181,20 @@ else {
           }
           else {
             console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+            process.exit();
+          }
+          if (args[4] == '64') {
+            text += 'pop rbx\n';
+          }
+          else if (args[4] == '32') {
+            text += 'pop ebx\n';
+          }
+          else if (args[4] == '16') {
+            text += 'pop bx\n';
+          }
+          else {
+            console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+            process.exit();
           }
         }
       }
