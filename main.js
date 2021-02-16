@@ -2,9 +2,9 @@
 var cp = require('child_process')
 var fs = require('fs');
 var args = process.argv;
-if (args.length < 3) {
+if (args.length < 4) {
   console.log('Usage:');
-  console.log('coyote [file] [bits]: compile [file] into an ELF object in [bits]-bit mode. Options are 64, 32, or 16. Default is 16.');
+  console.log('coyote [file] [os] [bits]: compile [file] into an ELF/Mach-O object for [os] (options are linux or darwin) on a [bits]-bit system. (options are 64, 32, or 16). Note that 16 produces a 32-bit ELF/Mach-O, that just uses 16-bit registers/instructions.');
 }
 else {
   fs.readFile(args[2], function(err, data) {
@@ -19,19 +19,59 @@ else {
       for (var i = 0; i < lines.length - 1; i++) {
         var tokens = lines[i].split('#')[0].split(' ');
         if (tokens[0] == 'EXTERN') {
-          nosection += 'extern ' + tokens[1] + '\n';
+          if (args[3] == 'darwin') {
+            nosection += 'extern _' + tokens[1] + '\n';
+          }
+          else if (args[3] == 'linux') {
+            nosection += 'extern ' + tokens[1] + '\n';
+          }
+          else {
+            console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+          }
         }
         else if (tokens[0] == 'NEW') {
-          nosection += 'global ' + tokens[2] + '\n';
+          if (args[3] == 'darwin') {
+            nosection += 'global _' + tokens[2] + '\n';
+          }
+          else if (args[3] == 'linux') {
+            nosection += 'global ' + tokens[2] + '\n';
+          }
+          else {
+            console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+          }
           if (tokens[1] == 'FUN') {
-            text += tokens[2] + ':\n';
+            if (args[3] == 'darwin') {
+              text += '_' + tokens[2] + ':\n';
+            }
+            else if (args[3] == 'linux') {
+              text += tokens[2] + ':\n';
+            }
+            else {
+              console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+            }
           }
           else if (tokens[1] == 'INT') {
-            data += tokens[2] + ': db ' + tokens[3] + '\n';
+            if (args[3] == 'darwin') {
+              data += '_' + tokens[2] + ': db ' + tokens[3] + '\n';
+            }
+            else if (args[3] == 'linux') {
+              data += tokens[2] + ': db ' + tokens[3] + '\n';
+            }
+            else {
+              console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+            }
           }
           else if (tokens[1] == 'STR') {
             var string = tokens.length - 3;
-            data += tokens[2] + ': db "';
+            if (args[3] == 'darwin') {
+              data += '_' + tokens[2] + ': db "';
+            }
+            else if (args[3] == 'linux') {
+              data += tokens[2] + ': db "';
+            }
+            else {
+              console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+            }
             for (var j = 0; j < string; j++) {
               data += tokens[j + 3];
               if (!((string - j) == 1)) {
@@ -47,14 +87,17 @@ else {
         }
         else if (tokens[0] == 'RET') {
           if (tokens.length > 1) {
-            if (args[3] == '64') {
+            if (args[4] == '64') {
               text += 'mov rax, ' + tokens[1] + '\n';
             }
-            else if (args[3] == '32') {
+            else if (args[4] == '32') {
               text += 'mov eax, ' + tokens[1] + '\n';
             }
-            else {
+            else if (args[4] == '16') {
               text += 'mov ax, ' + tokens[1] + '\n';
+            }
+            else {
+              console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
             }
           }
           text += 'ret\n';
@@ -63,7 +106,8 @@ else {
           // compiler just passes over
         }
         else {
-          if (args[3] == '64') {
+          if (args[4] == '64') {
+            text += 'push rbx\n';
             for (var j = 1; j < tokens.length; j++) {
               if (j == 1) {
                 text += 'mov rdi, ' + tokens[j] + '\n';
@@ -87,13 +131,17 @@ else {
                 text += 'push ' + tokens[j] + '\n';
               }
             }
+            text += 'pop rbx\n';
           }
-          else if (args[3] == '32') {
+          else if (args[4] == '32') {
+            text += 'push ebx\n';
             for (var j = tokens.length; j < 1; j--) {
               text += 'push ' + tokens[j] + '\n';
             }
+            text += 'pop ebx\n';
           }
-          else {
+          else if (args[4] == '16') {
+            text += 'push bx\n';
             for (var j = 1; j < tokens.length; j++) {
               if (j == 1) {
                 text += 'mov di, ' + tokens[j] + '\n';
@@ -117,8 +165,20 @@ else {
                 text += 'push ' + tokens[j] + '\n';
               }
             }
+            text += 'pop bx\n';
           }
-          text += 'call ' + tokens[0] + '\n';
+          else {
+            console.log('');
+          }
+          if (args[3] == 'darwin') {
+            text += 'call _' + tokens[0] + '\n';
+          }
+          else if (args[3] == 'linux') {
+            text += 'call ' + tokens[0] + '\n';
+          }
+          else {
+            console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+          }
         }
       }
       var output = nosection + 'section .text\n' + text + 'section .data\n' + data;
@@ -128,10 +188,28 @@ else {
         }
         else {
           var append = '';
-          if (args[3] == '64') {
-            append = '64';
+          if (args[3] == 'darwin') {
+            append += 'macho';
           }
-          var assembler = cp.exec('nasm -g -f elf' + append + ' ' + args[2].split('.')[0] + '.asm');
+          else if (args[3] == 'linux') {
+            append += 'elf';
+          }
+          else {
+            console.log('Error: Invalid OS: ' + args[3]);
+          }
+          if (args[4] == '64') {
+            append += '64';
+          }
+          else if (args[4] == '32') {
+            append += '32';
+          }
+          else if (args[4] == '16') {
+            append += '32';
+          }
+          else {
+            console.log('Error: Invalid number of bits: ' + args[4]);
+          }
+          var assembler = cp.exec('nasm -g -f ' + append + ' ' + args[2].split('.')[0] + '.asm');
           assembler.stdout.on('data', function(data) {
             process.stdout.write(data);
           });
@@ -144,6 +222,7 @@ else {
             }
             else {
               console.log('Error during assembly! see above message.');
+              fs.unlinkSync(args[2].split('.')[0] + '.asm');
             }
           });
         }

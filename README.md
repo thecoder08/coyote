@@ -59,19 +59,19 @@ Install using NPM with Github Packages as a repository with:
 npm i @thecoder08/coyote -g
 ```
 ## How to use
-To compile a Coyote source code file into an ELF object, use the `coyote` command. Doing so requires a Linux operating system, node.js, and the Netwide Assembler (NASM). Use the following command line syntax:
+To compile a Coyote source code file into an ELF or Mach-O object, use the `coyote` command. Doing so requires a Linux or MacOS/Darwin operating system, node.js, and the Netwide Assembler (NASM). Use the following command line syntax:
 ```
-coyote [file] [bits]: compile [file] into an ELF object in [bits]-bit mode. Options are 64, 32, or 16. Default is 16.
+coyote [file] [os] [bits]: compile [file] into an ELF/Mach-O object for [os] (options are linux or darwin) on a [bits]-bit system. (options are 64, 32, or 16). Note that 16 produces a 32-bit ELF/Mach-O, that just uses 16-bit registers/instructions.
 ```
 With the `coyote` command, you can produce 64- or 32-bit object files, as well as 32-bit object files with 16-bit code.
 
-To produce an ELF binary from some Coyote objects and the GNU C library, install GCC, and run:
+To produce an ELF or Mach-O binary from some Coyote objects and the GNU C library or MacOS C library, install GCC/Clang, and run:
 ```shell
-gcc [objects] [-m32] -static [-o output]
+gcc [objects] [-m32] [-static] [-o output]
 ```
-This links the object files [objects] with the GNU C library. So far, Coyote can only produce static-compilant objects, so for this reason, you must install the static version of glibc. To link 32-bit code, install the 32-bit version of glibc, and add the `-m32` argument to gcc. To specify an output file, use the `-o` argument. The default ouput is called `a.out`. You should be left with a single, fully static binary that is your Coyote program.
+This links the object files [objects] with the GNU C library or MacOS C library. So far, Coyote can only produce static-compilant objects on linux, so for this reason, you must install the static version of glibc. To link 32-bit code, install the 32-bit version of glibc or osxc, and add the `-m32` argument to gcc/clang. To specify an output file, use the `-o` argument. The default output is called `a.out`. You should be left with a single, fully static (on linux) binary that is your Coyote program.
 ## Hello World
-A Hello World program using the GNU C library in Coyote can be produced using the following code:
+A Hello World program in Coyote can be produced using the following code:
 
 In file hello.cot:
 ```coyote
@@ -83,9 +83,9 @@ RET 0
 
 NEW STR msg Hello World!
 ```
-compile:
+compile for linux x64:
 ```shell
-coyote hello.cot 64
+coyote hello.cot linux 64
 ```
 link:
 ```shell
@@ -98,5 +98,3 @@ Hello World!
 ```
 ## Where to go from here
 There's a reason that I called Coyote a versatile language. I originally designed it to write my [operating system from scratch](https://github.com/thecoder08/scratch-os). You can make operating systems, use any external framework/library, and even combine it with other programming languages. Right now it doesn't have many features. It's lacking in control flow features for example (if/else, loops etc). However, because you can combine it with other languages, you could create them. I hope that you find the Coyote project useful and interesting.
-
-OSX support is coming soon!

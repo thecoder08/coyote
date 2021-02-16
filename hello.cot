@@ -1,0 +1,7 @@
+EXTERN puts
+
+NEW FUN main
+puts _msg
+RET 0
+
+NEW STR msg Hello World!
