@@ -1,6 +1,6 @@
 {
   "name": "@thecoder08/coyote",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A versatile high-level programming language.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
