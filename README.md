@@ -1,5 +1,5 @@
 # Coyote
-Coyote is a versatile, high-level, statically typed, compiled programming language. It has a simple syntax, reminiscent of BASIC.
+Coyote is a versatile, cross-platform, high-level, statically typed, compiled programming language. It has a simple syntax, reminiscent of BASIC.
 ## Syntax
 Coyote uses whitespaces to denote the different tokens. Strings are a combination of multiple concatenated tokens. Any empty lines are ignored. Anything after a `#` symbol in a line is considered a comment. Built-in functions are all-caps. For instance:
 ```coyote
@@ -52,7 +52,7 @@ RET 12
 ```
 Unfortunately, as of now, there is no way to retrieve the return value of a function you called.
 ## Non-built-in functions
-Non built-in functions can be any kind of ELF label in the `.text` section/segment. For instance, in assembly, it can be any subroutine. It can also be any C function.
+Non built-in functions can be any kind of ELF/Mach-O label in the `.text` section/segment. For instance, in assembly, it can be any subroutine. It can also be any C function.
 ## Installation
 Install using NPM with Github Packages as a repository with:
 ```shell
