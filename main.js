@@ -2,7 +2,7 @@
 var cp = require('child_process')
 var fs = require('fs');
 var args = process.argv;
-if (args.length < 4) {
+if (args.length < 5) {
   console.log('Usage:');
   console.log('coyote [file] [os] [bits]: compile [file] into an ELF/Mach-O object for [os] (options are linux or darwin) on a [bits]-bit system. (options are 64, 32, or 16). Note that 16 produces a 32-bit ELF/Mach-O, that just uses 16-bit registers/instructions.');
 }
