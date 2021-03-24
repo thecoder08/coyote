@@ -6,12 +6,25 @@ Coyote uses whitespaces to denote the different tokens. Strings are a combinatio
 BUILTIN arg1 arg2 arg3 ...
 ```
 Anything not identfied as a built-in function is interpreted as a function, maybe in C, maybe an assembly subroutine, or maybe another Coyote function. For example, when linking a Coyote program with the GNU C library, you can use C functions such as `printf` and `puts`. You just have to tell the compiler that the subroutine is external.
+
+To pass the contents of a variable to a function, you must surround it with square brackets ([]). This passes the data in the variable to the function, as opposed to a pointer to the variable. For example, when using printf to print the content of a variable, do the following.
+```coyote
+EXTERN printf
+
+NEW FUN main
+printf msg [a]
+RET 0
+
+NEW STR msg %d", 10, "
+NEW INT a 42
+```
+You need to pass the contents of the variable `a` to printf, so that it prints the contents. However, printf expects a POINTER to the message to print, so no square brackets around `msg` are nessesary.
 ## Built-in functions
 There is a limited number of built-in functions. Currently, there are just `NEW`, `EXTERN`, and `RET`.
 ### NEW
 The `NEW` built-in function is used to define data. All data is globally accessable from anywhere in the program. It uses the format
 ```coyote
-NEW [type] [name] [initialdata]
+NEW type name initialdata
 ```
 There are three available types of data currently. They are `INT`, a decimal, binary, octal, or hexadecimal integer, `FUN`, a function, and `STR`, a string. `FUN`s use the initialdata token as their parameters. All code underneath them is considered their initial data.
 
@@ -23,7 +36,22 @@ NEW STR msg Hello World!
 ```coyote
 NEW INT char 'H'
 ```
-As of now, it isn't currently possible to read or write the data initialized using `NEW`.
+### ASSIGN
+The `ASSIGN` built-in function can change the data in an already exsisting variable. The syntax is the following:
+```coyote
+ASSIGN name data
+```
+This changes the data in a variable, as opposed to creating a new one with some initial data.
+### ADD
+The `ADD` function does as you would expect, it adds two numbers or variables together. the syntax is as follows:
+```coyote
+ADD varornum varornum var
+```
+For example
+```coyote
+ADD [a] 1 b
+```
+to add the variable `a` and 1, and store the result in the variable `b`.
 ### EXTERN
 `EXTERN` is used to specify that some data is not defined within this Coyote file of the program (The data can be any type). For example, if you have two Coyote files, any data in the other file that you want to use in this file MUST be declared with `EXTERN`. For example, say the following code is in file1.cot:
 ```coyote
@@ -33,7 +61,7 @@ NEW INT bar 1
 NEW INT foobar 2
 
 NEW FUN main
-foo bar foobar # our cool function
+foo [bar] [foobar] # our cool function
 RET 0
 ```
 and the following code is in
@@ -41,7 +69,7 @@ file2.cot:
 ```coyote
 EXTERN asm # external assembly magic function
 NEW FUN foo arg1 arg2
-asm arg1 arg2
+asm [arg1] [arg2]
 RET
 ```
 In this program, a function called `foo` is used as a wrapper around an assembly function. Coyote can be combined with any other compiled language using the linker, including C and assembly.
@@ -75,13 +103,13 @@ A Hello World program in Coyote can be produced using the following code:
 
 In file hello.cot:
 ```coyote
-EXTERN puts
+EXTERN printf
 
 NEW FUN main
-puts msg
+printf msg
 RET 0
 
-NEW STR msg Hello World!
+NEW STR msg Hello World!", 10, "
 ```
 compile for linux x64:
 ```shell

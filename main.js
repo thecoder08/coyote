@@ -52,13 +52,53 @@ else {
               console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
               process.exit();
             }
+            if (args[4] == '64') {
+              text += 'push rbp\n';
+              text += 'mov rbp, rsp\n';
+            }
+            else if (args[4] == '32') {
+              text += 'push ebp\n';
+              text += 'mov ebp, esp\n';
+            }
+            else if (args[4] == '16') {
+              text += 'push bp\n';
+              text += 'mov bp, sp\n';
+            }
+            else {
+              console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+              process.exit();
+            }
           }
           else if (tokens[1] == 'INT') {
             if (args[3] == 'darwin') {
-              data += '_' + tokens[2] + ': db ' + tokens[3] + '\n';
+              if (args[4] == '64') {
+                data += '_' + tokens[2] + ': dq ' + tokens[3] + '\n';
+              }
+              else if (args[4] == '32') {
+                data += '_' + tokens[2] + ': dd ' + tokens[3] + '\n';
+              }
+              else if (args[4] == '16') {
+                data += '_' + tokens[2] + ': dw ' + tokens[3] + '\n';
+              }
+              else {
+                console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+                process.exit();
+              }
             }
             else if (args[3] == 'linux') {
-              data += tokens[2] + ': db ' + tokens[3] + '\n';
+              if (args[4] == '64') {
+                data += tokens[2] + ': dq ' + tokens[3] + '\n';
+              }
+              else if (args[4] == '32') {
+                data += tokens[2] + ': dd ' + tokens[3] + '\n';
+              }
+              else if (args[4] == '16') {
+                data += tokens[2] + ': dw ' + tokens[3] + '\n';
+              }
+              else {
+                console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+                process.exit();
+              }
             }
             else {
               console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
@@ -105,14 +145,119 @@ else {
               process.exit();
             }
           }
+          if (args[4] == '64') {
+            text += 'mov rsp, rbp\n';
+            text += 'pop rbp\n';
+          }
+          else if (args[4] == '32') {
+            text += 'mov esp, ebp\n';
+            text += 'pop ebp\n';
+          }
+          else if (args[4] == '16') {
+            text += 'mov sp, bp\n';
+            text += 'pop bp\n';
+          }
+          else {
+            console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+            process.exit();
+          }
           text += 'ret\n';
+        }
+        else if (tokens[0] == 'ADD') {
+          if (args[3] == 'linux') {
+            if (args[4] == '64') {
+              text += 'mov rax, ' + tokens[1] + '\n';
+              text += 'add rax, ' + tokens[2] + '\n';
+              text += 'mov [' + tokens[3] + '], rax\n';
+            }
+            else if (args[4] == '32') {
+              text += 'mov eax, ' + tokens[1] + '\n';
+              text += 'add eax, ' + tokens[2] + '\n';
+              text += 'mov [' + tokens[3] + '], eax\n';
+            }
+            else if (args[4] == '16') {
+              text += 'mov ax, ' + tokens[1] + '\n';
+              text += 'add ax, ' + tokens[2] + '\n';
+              text += 'mov [' + tokens[3] + '], ax\n';
+            }
+            else {
+              console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+              process.exit();
+            }
+          }
+          else if (args[3] == 'darwin') {
+            if (args[4] == '64') {
+              text += 'mov rax, ' + tokens[1] + '\n';
+              text += 'add rax, ' + tokens[2] + '\n';
+              text += 'mov [_' + tokens[3] + '], rax\n';
+            }
+            else if (args[4] == '32') {
+              text += 'mov eax, ' + tokens[1] + '\n';
+              text += 'add eax, ' + tokens[2] + '\n';
+              text += 'mov [_' + tokens[3] + '], eax\n';
+            }
+            else if (args[4] == '16') {
+              text += 'mov ax, ' + tokens[1] + '\n';
+              text += 'add ax, ' + tokens[2] + '\n';
+              text += 'mov [_' + tokens[3] + '], ax\n';
+            }
+            else {
+              console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+              process.exit();
+            }
+          }
+          else {
+            console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+            process.exit();
+          }
+        }
+        else if (tokens[0] == 'ASSIGN') {
+          if (args[3] == 'linux') {
+            if (args[4] == '64') {
+              text += 'mov rax, ' + tokens[2] + '\n';
+              text += 'mov [' + tokens[1] + '], rax\n';
+            }
+            else if (args[4] == '32') {
+              text += 'mov eax, ' + tokens[2] + '\n';
+              text += 'mov [' + tokens[1] + '], eax\n';
+            }
+            else if (args[4] == '16') {
+              text += 'mov ax, ' + tokens[2] + '\n';
+              text += 'mov [' + tokens[1] + '], ax\n';
+            }
+            else {
+              console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+              process.exit();
+            }
+          }
+          else if (args[3] == 'darwin') {
+            if (args[4] == '64') {
+              text += 'mov rax, ' + tokens[2] + '\n';
+              text += 'mov [_' + tokens[1] + '], rax\n';
+            }
+            else if (args[4] == '32') {
+              text += 'mov eax, ' + tokens[2] + '\n';
+              text += 'mov [_' + tokens[1] + '], eax\n';
+            }
+            else if (args[4] == '16') {
+              text += 'mov ax, ' + tokens[2] + '\n';
+              text += 'mov [_' + tokens[1] + '], ax\n';
+            }
+            else {
+              console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+              process.exit();
+            }
+          }
+          else {
+            console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
+            process.exit();
+          }
         }
         else if (tokens[0] == '') { // if the line is blank
           // compiler just passes over
         }
         else {
           if (args[4] == '64') {
-            text += 'push rbx\n';
             for (var j = 1; j < tokens.length; j++) {
               if (j == 1) {
                 text += 'mov rdi, ' + tokens[j] + '\n';
@@ -138,13 +283,12 @@ else {
             }
           }
           else if (args[4] == '32') {
-            text += 'push ebx\n';
-            for (var j = tokens.length; j < 1; j--) {
-              text += 'push ' + tokens[j] + '\n';
+            for (var j = tokens.length; j > 1; j--) {
+              text += 'mov eax, ' + tokens[j - 1] + '\n';
+              text += 'push eax\n';
             }
           }
           else if (args[4] == '16') {
-            text += 'push bx\n';
             for (var j = 1; j < tokens.length; j++) {
               if (j == 1) {
                 text += 'mov di, ' + tokens[j] + '\n';
@@ -181,19 +325,6 @@ else {
           }
           else {
             console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
-            process.exit();
-          }
-          if (args[4] == '64') {
-            text += 'pop rbx\n';
-          }
-          else if (args[4] == '32') {
-            text += 'pop ebx\n';
-          }
-          else if (args[4] == '16') {
-            text += 'pop bx\n';
-          }
-          else {
-            console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
             process.exit();
           }
         }
