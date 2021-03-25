@@ -79,6 +79,46 @@ In this program, a function called `foo` is used as a wrapper around an assembly
 RET 12
 ```
 Unfortunately, as of now, there is no way to retrieve the return value of a function you called.
+### IF/ELSE/ENDIF
+The `IF` builtin runs some code based on a condition, created by comparing two values. The syntax is below:
+```coyote
+IF comparison value1 value2
+# add code here
+ELSE
+# add code here
+ENDIF
+```
+When the code hits the IF function, it tests the values against the comparison. The comparison can be one of `EQU` (equal), `NEQU`, (not equal), `GTR`, (greater), `NGTR` (not greater) `LES` (less) and `NLES` (not less). If the test is true, it will execute the code from the `IF` function to the `ELSE` function, then skip over to the `ENDIF` function. If the test is not true, it will skip over to the `ELSE` function, and execute to the `ENDIF` function and beyond.
+### LABEL/GOTO
+`LABEL` and `GOTO` can be used to create loops, and can be used in combination with `IF/ELSE/ENDIF` to create condititonal loops. The syntax is below:
+```coyote
+LABEL labelname
+GOTO labelname
+```
+An example use for loops could be the fibbonacci sequence. here is an example fibbonacci program:
+```coyote
+EXTERN printf
+
+NEW FUN main
+LABEL fibloop
+ADD [counter] 1 counter
+ADD [a] [b] c
+ASSIGN a [b]
+ASSIGN b [c]
+printf msg [a]
+IF EQU [counter] 25
+RET 0
+ELSE
+GOTO fibloop
+ENDIF
+
+NEW STR msg %d", 10, "
+NEW INT a 1
+NEW INT b 1
+NEW INT c 0
+NEW INT counter 0
+```
+the `LABEL` function defines a point where GOTO can go to. The `GOTO` function goes to a label.
 ## Non-built-in functions
 Non built-in functions can be any kind of ELF/Mach-O label in the `.text` section/segment. For instance, in assembly, it can be any subroutine. It can also be any C function.
 ## Installation

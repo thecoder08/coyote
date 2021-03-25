@@ -125,7 +125,7 @@ else {
             data += '", 0\n';
           }
           else {
-            console.log('Error at line ' + (i + 1) + ': Type not found');
+            console.log('Error at line ' + (i + 1) + ': Type not found: ' + tokens[1]);
             process.exit();
           }
         }
@@ -252,6 +252,59 @@ else {
             console.log('Error at line ' + (i + 1) + ': Invalid OS: ' + args[3]);
             process.exit();
           }
+        }
+        else if (tokens[0] == 'IF') {
+          if (args[4] == '64') {
+            text += 'mov rax, ' + tokens[2] + '\n';
+            text += 'cmp rax, ' + tokens[3] + '\n';
+          }
+          else if (args[4] == '32') {
+            text += 'mov eax, ' + tokens[2] + '\n';
+            text += 'cmp eax, ' + tokens[3] + '\n';
+          }
+          else if (args[4] == '16') {
+            text += 'mov ax, ' + tokens[2] + '\n';
+            text += 'cmp ax, ' + tokens[3] + '\n';
+          }
+          else {
+            console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
+            process.exit();
+          }
+          if (tokens[1] == 'EQU') {
+            text += 'jne else\n';
+          }
+          else if (tokens[1] == 'NEQU') {
+            text += 'je else\n';
+          }
+          else if (tokens[1] == 'GTR') {
+            text += 'jng else\n';
+          }
+          else if (tokens[1] == 'NGTR') {
+            text += 'jg else\n';
+          }
+          else if (tokens[1] == 'LES') {
+            text += 'jnl else\n';
+          }
+          else if (tokens[1] == 'NLES') {
+            text += 'jl else\n';
+          }
+          else {
+            console.log('Error at line ' + (i + 1) + ': Comparison not found: ' + tokens[1]);
+            process.exit();
+          }
+        }
+        else if (tokens[0] == 'ELSE') {
+          text += 'jmp end\n';
+          text += 'else:\n';
+        }
+        else if (tokens[0] == 'ENDIF') {
+          text += 'end:\n';
+        }
+        else if (tokens[0] == 'LABEL') {
+          text += tokens[1] + ':\n';
+        }
+        else if (tokens[0] == 'GOTO') {
+          text += 'jmp ' + tokens[1] + '\n';
         }
         else if (tokens[0] == '') { // if the line is blank
           // compiler just passes over
