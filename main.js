@@ -55,17 +55,14 @@ else {
             if (args[4] == '64') {
               text += 'push rbp\n';
               text += 'mov rbp, rsp\n';
-              text += 'and rsp, -16\n';
             }
             else if (args[4] == '32') {
               text += 'push ebp\n';
               text += 'mov ebp, esp\n';
-              text += 'and esp, -16\n';
             }
             else if (args[4] == '16') {
               text += 'push bp\n';
               text += 'mov bp, sp\n';
-              text += 'and sp, -16\n';
             }
             else {
               console.log('Error at line ' + (i + 1) + ': Invalid number of bits: ' + args[4]);
