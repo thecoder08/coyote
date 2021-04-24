@@ -405,7 +405,7 @@ else {
             append += '32';
           }
           else if (args[4] == '16') {
-            append += '32';
+            append = 'bin';
           }
           else {
             console.log('Error: Invalid number of bits: ' + args[4]);
