@@ -122,17 +122,12 @@ the `LABEL` function defines a point where GOTO can go to. The `GOTO` function g
 ## Non-built-in functions
 Non built-in functions can be any kind of ELF/Mach-O label in the `.text` section/segment. For instance, in assembly, it can be any subroutine. It can also be any C function.
 ## Installation
-Install using NPM with Github Packages as a repository with:
-```shell
-npm i @thecoder08/coyote -g
-```
+Download the latest release from the Releases page for your platform, and put the executable in the $PATH.
 ## How to use
-To compile a Coyote source code file into an ELF or Mach-O object, use the `coyote` command. Doing so requires a Linux or MacOS/Darwin operating system, node.js, and the Netwide Assembler (NASM). Use the following command line syntax:
+To compile a Coyote source code file into an object, use the `coyote` command. Doing so requires the Netwide Assembler (NASM). Use the following command line syntax:
 ```
 coyote [file] [os] [bits]: compile [file] into an ELF/Mach-O object for [os] (options are linux or darwin) on a [bits]-bit system. (options are 64, 32, or 16). Note that 16 produces a 32-bit ELF/Mach-O, that just uses 16-bit registers/instructions.
 ```
-With the `coyote` command, you can produce 64- or 32-bit object files, as well as 32-bit object files with 16-bit code.
-
 To produce an ELF or Mach-O binary from some Coyote objects and the GNU C library or MacOS C library, install GCC/Clang, and run:
 ```shell
 gcc [objects] [-m32] [-static] [-o output]
@@ -153,7 +148,7 @@ NEW STR msg Hello World!", 10, "
 ```
 compile for linux x64:
 ```shell
-coyote hello.cot linux 64
+coyote hello.cot linux64
 ```
 link:
 ```shell
@@ -165,4 +160,4 @@ run:
 Hello World!
 ```
 ## Where to go from here
-There's a reason that I called Coyote a versatile language. I originally designed it to write my [operating system from scratch](https://github.com/thecoder08/scratch-os). You can make operating systems, use any external framework/library, and even combine it with other programming languages. Right now it doesn't have many features. It's lacking in control flow features for example (if/else, loops etc). However, because you can combine it with other languages, you could create them. I hope that you find the Coyote project useful and interesting.
+There's a reason that I called Coyote a versatile language. I originally designed it to write my [operating system from scratch](https://github.com/thecoder08/scratch-os). You can make operating systems, use any external framework/library, and even combine it with other programming languages. I hope that you find the Coyote project useful and interesting.
