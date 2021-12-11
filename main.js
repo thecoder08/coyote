@@ -22,7 +22,7 @@ else {
             nosection += 'extern _' + tokens[1] + '\n';
           }
           else if (args[3] == 'raw16') {
-            text += '%include "' + tokens[1] + '"';
+            text += '%include "' + tokens[1] + '"\n';
           }
           else if ((args[3] == 'linux32') || (args[3] == 'linux64') || (args[3] == 'win')) {
             nosection += 'extern ' + tokens[1] + '\n';
@@ -135,7 +135,7 @@ else {
             text += 'mov esp, ebp\n';
             text += 'pop ebp\n';
           }
-          else if (args[3] == '16') {}
+          else if (args[3] == 'raw16') {}
           else {
             console.log('Error at line ' + (i + 1) + ': Invalid target: ' + args[3]);
             process.exit();
@@ -323,7 +323,13 @@ else {
           }
         }
       }
-      var output = nosection + 'section .text\n' + text + 'section .data\n' + data;
+      var output = '';
+      if (args[3] == 'raw16') {
+        output = nosection + text + data;
+      }
+      else {
+        output = nosection + 'section .text\n' + text + 'section .data\n' + data;
+      }
       fs.writeFile(args[2].split('.')[0] + '.asm', output, function(err) {
         if (err) {
           console.log('Error writing temporary output file!');
