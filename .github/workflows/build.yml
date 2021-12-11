@@ -1,0 +1,39 @@
+name: Build program
+
+on:
+  [push, workflow_dispatch]
+
+jobs:
+  buildexe:
+    name: Build executables
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get repository code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Install pkg
+        run: npm i pkg -g
+
+      - name: Build executables
+        run: pkg .
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v2
+        with:
+          name: coyote-win.exe
+          path: coyote-win.exe
+
+      - name: Upload Linux build
+        uses: actions/upload-artifact@v2
+        with:
+          name: coyote-linux
+          path: coyote-linux
+
+      - name: Upload MacOS build
+        uses: actions/upload-artifact@v2
+        with:
+          name: coyote-macos
+          path: coyote-macos
