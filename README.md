@@ -126,7 +126,7 @@ Download the latest release from the Releases page for your platform, and put th
 ## How to use
 To compile a Coyote source code file into an object, use the `coyote` command. Doing so requires the Netwide Assembler (NASM). Use the following command line syntax:
 ```
-coyote [file] [os] [bits]: compile [file] into an ELF/Mach-O object for [os] (options are linux or darwin) on a [bits]-bit system. (options are 64, 32, or 16). Note that 16 produces a 32-bit ELF/Mach-O, that just uses 16-bit registers/instructions.
+coyote [file] [target]: compile [file] for a [target] (options are raw16, linux32, linux64, win, or darwin) system. Note: win and darwin are both 64-bit.
 ```
 To produce an ELF or Mach-O binary from some Coyote objects and the GNU C library or MacOS C library, install GCC/Clang, and run:
 ```shell
@@ -146,7 +146,7 @@ RET 0
 
 NEW STR msg Hello World!", 10, "
 ```
-compile for linux x64:
+compile for linux 64-bit:
 ```shell
 coyote hello.cot linux64
 ```
