@@ -1,7 +1,7 @@
 var cp = require('child_process');
 var fs = require('fs');
 var args = process.argv;
-if (args.length < 5) {
+if (args.length < 4) {
   console.log('Usage:');
   console.log('coyote [file] [target]: compile [file] for a [target] (options are raw16, linux32, linux64, win, or darwin) system. Note: win and darwin are both 64-bit.');
 }
@@ -21,7 +21,10 @@ else {
           if (args[3] == 'darwin') {
             nosection += 'extern _' + tokens[1] + '\n';
           }
-          else if ((args[3] == 'linux32') || (args[3] == 'linux64') || (args[3] == 'win') || (args[3] == 'raw16')) {
+          else if (args[3] == 'raw16') {
+            text += '%include "' + tokens[1] + '"';
+          }
+          else if ((args[3] == 'linux32') || (args[3] == 'linux64') || (args[3] == 'win')) {
             nosection += 'extern ' + tokens[1] + '\n';
           }
           else {
