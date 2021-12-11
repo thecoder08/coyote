@@ -122,7 +122,7 @@ the `LABEL` function defines a point where GOTO can go to. The `GOTO` function g
 ## Non-built-in functions
 Non built-in functions can be any kind of ELF/Mach-O label in the `.text` section/segment. For instance, in assembly, it can be any subroutine. It can also be any C function.
 ## Installation
-Download the latest release from the Releases page for your platform, and put the executable in the $PATH.
+Download the latest release from the Releases page for your platform, make executable on MacOS and Linux, and put the executable in the $PATH.
 ## How to use
 To compile a Coyote source code file into an object, use the `coyote` command. Doing so requires the Netwide Assembler (NASM). Use the following command line syntax:
 ```
