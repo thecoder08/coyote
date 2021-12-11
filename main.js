@@ -267,7 +267,7 @@ else {
               }
             }
           }
-          else if (args[3] == 'win) {
+          else if (args[3] == 'win') {
             for (var j = 1; j < tokens.length; j++) {
               if (j == 1) {
                 text += 'mov rcx, ' + tokens[j] + '\n';
