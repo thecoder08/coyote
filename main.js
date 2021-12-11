@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-var cp = require('child_process')
+var cp = require('child_process');
 var fs = require('fs');
 var args = process.argv;
 if (args.length < 5) {
