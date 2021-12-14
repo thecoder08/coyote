@@ -13,7 +13,7 @@ else {
     else {
       var nosection = '';
       var text = '';
-      var lines = data.toString().split('\n');
+      var lines = data.toString().split(require('os').EOL);
       var data = '';
       for (var i = 0; i < lines.length - 1; i++) {
         var tokens = lines[i].split('#')[0].split(' ');
